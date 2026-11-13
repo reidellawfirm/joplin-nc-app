@@ -28,8 +28,8 @@ This app is independent of the "Joplin File Titles" app; both can be enabled tog
     <category>office</category>
     <category>organization</category>
     <website>https://joplinapp.org/</website>
-    <bugs>https://github.com/Reidel-Law-Firm/joplin_nc_app/issues</bugs>
-    <repository type="git">https://github.com/Reidel-Law-Firm/joplin_nc_app</repository>
+    <bugs>https://github.com/Reidel-Law-Firm/joplin-nc-app/issues</bugs>
+    <repository type="git">https://github.com/Reidel-Law-Firm/joplin-nc-app</repository>
     <dependencies>
         <nextcloud min-version="28" max-version="99"/>
     </dependencies>
