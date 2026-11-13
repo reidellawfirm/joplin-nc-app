@@ -1,0 +1,1367 @@
+/* =====================================================================
+   Joplin app — three-panel layout (notebooks | notes list | viewer/editor)
+   ===================================================================== */
+
+#content     { padding: 0 !important; }
+#app-content { padding: 0 !important; }
+
+#joplin_nc_app-app {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    font-family: var(--font-face, system-ui, -apple-system, "Segoe UI", "Roboto",
+                 "Helvetica Neue", sans-serif);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    /* Light, subtle divider colour reused across panes & headers. */
+    --joplin_nc_app-divider: var(--color-border-dark, rgba(0, 0, 0, 0.07));
+    --joplin_nc_app-pane-bg-soft: var(--color-background-hover, #f6f7f9);
+    --joplin_nc_app-pane-bg-softer: var(--color-background-dark, #fafbfc);
+}
+
+/* ---------- Panes ---------- */
+.joplin_nc_app-pane {
+    overflow-y: auto;
+    background: var(--color-main-background);
+    box-sizing: border-box;
+}
+
+/* Left column: notebooks tree */
+.joplin_nc_app-pane-notebooks {
+    flex: 0 0 260px;
+    width: 260px;
+    min-width: 220px;
+    max-width: 320px;
+    border-right: 1px solid var(--joplin_nc_app-divider);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--joplin_nc_app-pane-bg-soft);
+}
+
+/* Middle column: notes list */
+.joplin_nc_app-pane-list {
+    flex: 0 0 320px;
+    width: 320px;
+    min-width: 280px;
+    max-width: 380px;
+    border-right: 1px solid var(--joplin_nc_app-divider);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--joplin_nc_app-pane-bg-softer);
+}
+
+.joplin_nc_app-pane-viewer {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 28px 36px 36px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- Sidebar header (brand + New note) ---------- */
+.joplin_nc_app-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 14px 12px;
+    background: transparent;
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+}
+.joplin_nc_app-sidebar-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+.joplin_nc_app-sidebar-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-main-text);
+}
+.joplin_nc_app-sidebar-counts {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-maxcontrast);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.joplin_nc_app-new-btn {
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    border: none;
+    background: var(--color-primary-element);
+    color: var(--color-primary-element-text);
+    cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    white-space: nowrap;
+}
+    .joplin_nc_app-new-btn:hover {
+        filter: brightness(1.08);
+        transform: scale(1.04);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .joplin_nc_app-new-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+/* ---------- Notes-pane header (middle column top bar) ---------- */
+.joplin_nc_app-notes-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    background: transparent;
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+}
+.joplin_nc_app-notes-pane-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-main-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.joplin_nc_app-notes-pane-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-maxcontrast);
+    margin-left: 4px;
+}
+
+/* ---------- Search ---------- */
+.joplin_nc_app-search {
+    padding: 10px 14px;
+    background: transparent;
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+}
+.joplin_nc_app-search input {
+    width: 100%;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-background-dark, #f1f3f5);
+    font-size: 13px;
+    color: var(--color-main-text);
+    transition: border-color 0.15s, background 0.15s;
+}
+.joplin_nc_app-search input:focus {
+    outline: none;
+    border-color: var(--color-primary-element);
+    background: var(--color-main-background);
+}
+
+/* ---------- Notebooks pane (always visible in its own column) ---------- */
+.joplin_nc_app-notebooks {
+    background: transparent;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.joplin_nc_app-notebooks-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--color-text-maxcontrast);
+    text-align: left;
+}
+.joplin_nc_app-notebooks-twisty {
+    display: inline-block;
+    width: 12px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--color-text-maxcontrast);
+}
+.joplin_nc_app-notebooks-label { flex: 0 0 auto; }
+.joplin_nc_app-notebooks-count {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--color-background-dark, #eef0f3);
+    color: var(--color-text-maxcontrast);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+.joplin_nc_app-icon-btn {
+    margin-left: auto;
+    padding: 3px 10px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    color: var(--color-text-maxcontrast);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    border-radius: 4px;
+    line-height: 1;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+    .joplin_nc_app-icon-btn:hover, .joplin_nc_app-icon-btn:focus {
+    background: var(--color-background-hover);
+    color: var(--color-main-text);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .joplin_nc_app-icon-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.joplin_nc_app-notebooks-body {
+    overflow-y: auto;
+    padding: 6px 8px 12px;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.joplin_nc_app-tree ul { list-style: none; padding: 0; margin: 0; }
+.joplin_nc_app-tree li { padding: 0; }
+.joplin_nc_app-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    user-select: none;
+    font-size: 13px;
+    color: var(--color-main-text);
+        transition: all 0.15s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+    .joplin_nc_app-tree-item:hover {
+        background: var(--color-background-hover);
+        padding-left: 12px;
+    }
+.joplin_nc_app-tree-item.active {
+    background: var(--color-primary-element-light, #e7eefc);
+    color: var(--color-primary-element, var(--color-main-text));
+    font-weight: 600;
+}
+.joplin_nc_app-tree-item .twisty {
+    display: inline-block;
+    width: 12px;
+    text-align: center;
+    color: var(--color-text-maxcontrast);
+    font-size: 10px;
+}
+.joplin_nc_app-tree-item .label {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.joplin_nc_app-tree ul ul { padding-left: 14px; }
+
+/* ---------- Notes list ---------- */
+.joplin_nc_app-list-header {
+    padding: 10px 14px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--color-text-maxcontrast);
+    background: transparent;
+}
+.joplin_nc_app-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    background: transparent;
+}
+.joplin_nc_app-list li {
+    position: relative;
+    padding: 12px 14px 12px 18px;
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+    cursor: pointer;
+        transition: all 0.15s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.joplin_nc_app-list li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: transparent;
+        transition: all 0.15s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+    .joplin_nc_app-list li:hover {
+        background: var(--color-background-hover);
+        padding-left: 16px;
+        transform: translateX(2px);
+    }
+.joplin_nc_app-list li.active { background: var(--color-primary-element-light, #e7eefc); }
+.joplin_nc_app-list li.active::before { background: var(--color-primary-element); }
+.joplin_nc_app-list li.active .title { color: var(--color-primary-element); }
+
+.joplin_nc_app-list .title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-main-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 4px;
+}
+.joplin_nc_app-list .excerpt {
+    font-size: 12.5px;
+    color: var(--color-text-maxcontrast);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+.joplin_nc_app-list .meta {
+    font-size: 11px;
+    color: var(--color-text-maxcontrast);
+    opacity: 0.85;
+}
+
+/* Empty state inside the list */
+.joplin_nc_app-empty-list {
+    padding: 36px 18px;
+    text-align: center;
+    color: var(--color-text-maxcontrast);
+    border-bottom: none !important;
+    cursor: default !important;
+    background: transparent !important;
+}
+.joplin_nc_app-empty-list:hover { background: transparent !important; }
+.joplin_nc_app-empty-list::before { display: none !important; }
+.joplin_nc_app-empty-list-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-main-text);
+    margin-bottom: 4px;
+}
+.joplin_nc_app-empty-list-msg { font-size: 12.5px; margin-bottom: 14px; }
+.joplin_nc_app-empty-list-cta {
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    border: none;
+    background: var(--color-primary-element);
+    color: var(--color-primary-element-text);
+    cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+    .joplin_nc_app-empty-list-cta:hover {
+        filter: brightness(1.08);
+        transform: scale(1.04);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .joplin_nc_app-empty-list-cta:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+/* ---------- Mobile menu button (shown inside viewer on small screens) ---------- */
+.joplin_nc_app-menu-btn {
+    display: none;
+    align-self: flex-start;
+    margin-bottom: 12px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+    .joplin_nc_app-menu-btn:hover {
+        background: var(--color-background-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .joplin_nc_app-menu-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+/* ---------- Viewer ---------- */
+.joplin_nc_app-viewer-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+.joplin_nc_app-viewer-title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--color-main-text);
+    flex: 1 1 auto;
+    word-break: break-word;
+}
+.joplin_nc_app-viewer-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.joplin_nc_app-edit-btn,
+.joplin_nc_app-delete-btn {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    /* !important guards against Nextcloud's global button styles bleeding in
+       and forcing the label to white on a pale background (unreadable). */
+    color: var(--color-main-text) !important;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+                transform 0.18s ease, box-shadow 0.18s ease;
+}
+.joplin_nc_app-edit-btn:hover,
+.joplin_nc_app-edit-btn:focus-visible {
+    background: var(--color-background-hover);
+    color: var(--color-main-text) !important;
+    border-color: var(--color-primary-element, #0082c9);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+}
+.joplin_nc_app-edit-btn:active {
+    transform: translateY(0);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Delete button — idle: dark red text on white. Hover: solid red + white text. */
+.joplin_nc_app-delete-btn {
+    color: #b3261e !important;            /* WCAG-AA against #fff */
+    border-color: rgba(179, 38, 30, 0.35);
+}
+.joplin_nc_app-delete-btn:hover,
+.joplin_nc_app-delete-btn:focus-visible {
+    background: #b3261e;
+    color: #ffffff !important;
+    border-color: #8c1d18;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(179, 38, 30, 0.35);
+}
+.joplin_nc_app-delete-btn:active {
+    background: #8c1d18;
+    color: #ffffff !important;
+    transform: translateY(0);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.joplin_nc_app-viewer-meta {
+    color: var(--color-text-maxcontrast);
+    font-size: 12.5px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+}
+.joplin_nc_app-viewer-body {
+    line-height: 1.7;
+    max-width: 820px;
+    font-size: 15.5px;
+    color: var(--color-main-text);
+}
+.joplin_nc_app-viewer-body h1,
+.joplin_nc_app-viewer-body h2,
+.joplin_nc_app-viewer-body h3,
+.joplin_nc_app-viewer-body h4 {
+    margin-top: 1.5em; margin-bottom: 0.5em;
+    line-height: 1.3; letter-spacing: -0.01em;
+}
+.joplin_nc_app-viewer-body h1 { font-size: 1.8em; }
+.joplin_nc_app-viewer-body h2 { font-size: 1.45em; }
+.joplin_nc_app-viewer-body h3 { font-size: 1.2em; }
+.joplin_nc_app-viewer-body p  { margin: 0.7em 0; }
+.joplin_nc_app-viewer-body ul,
+.joplin_nc_app-viewer-body ol {
+    padding-left: 1.75em;
+    margin: 0.6em 0;
+}
+.joplin_nc_app-viewer-body ul { list-style: disc outside !important; }
+.joplin_nc_app-viewer-body ul ul { list-style: circle outside !important; }
+.joplin_nc_app-viewer-body ul ul ul { list-style: square outside !important; }
+.joplin_nc_app-viewer-body ol { list-style: decimal outside !important; }
+.joplin_nc_app-viewer-body li { margin: 0.25em 0; display: list-item !important; }
+/* Inline emphasis — Nextcloud's global reset can flatten <em>/<strong>/<s>,
+   so re-assert them explicitly inside the viewer. */
+.joplin_nc_app-viewer-body em,
+.joplin_nc_app-viewer-body i { font-style: italic !important; font-weight: inherit; }
+.joplin_nc_app-viewer-body strong,
+.joplin_nc_app-viewer-body b { font-weight: 700 !important; font-style: inherit; }
+.joplin_nc_app-viewer-body em strong,
+.joplin_nc_app-viewer-body strong em { font-style: italic !important; font-weight: 700 !important; }
+.joplin_nc_app-viewer-body del,
+.joplin_nc_app-viewer-body s { text-decoration: line-through !important; }
+.joplin_nc_app-viewer-body mark { background: #fff3a3; color: inherit; padding: 0 2px; }
+/* Task-list items (GFM checkboxes) keep no marker */
+.joplin_nc_app-viewer-body li.task-list-item,
+.joplin_nc_app-viewer-body li:has(> input[type="checkbox"]) {
+    list-style: none !important;
+    margin-left: -1.25em;
+}
+.joplin_nc_app-viewer-body pre {
+    background: var(--color-background-dark, #f4f5f7);
+    padding: 12px 14px; border-radius: 8px;
+    overflow-x: auto; font-size: 13px;
+    border: 1px solid var(--color-border);
+}
+.joplin_nc_app-viewer-body code {
+    background: var(--color-background-dark, #f4f5f7);
+    padding: 2px 6px; border-radius: 4px;
+    font-family: var(--font-face-monospace, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.9em;
+}
+.joplin_nc_app-viewer-body pre code {
+    background: transparent; padding: 0; font-size: 13px; border: none;
+}
+.joplin_nc_app-viewer-body blockquote {
+    border-left: 3px solid var(--color-primary-element-light, var(--color-border));
+    margin: 1em 0;
+    padding: 0.4em 0 0.4em 16px;
+    color: var(--color-text-maxcontrast);
+    background: var(--color-background-dark, #f7f8fa);
+    border-radius: 0 6px 6px 0;
+}
+.joplin_nc_app-viewer-body table { border-collapse: collapse; margin: 1em 0; }
+.joplin_nc_app-viewer-body th,
+.joplin_nc_app-viewer-body td { border: 1px solid var(--color-border); padding: 6px 10px; }
+.joplin_nc_app-viewer-body th { background: var(--color-background-dark); font-weight: 600; }
+.joplin_nc_app-viewer-body img { max-width: 100%; border-radius: 6px; }
+.joplin_nc_app-viewer-body a { color: var(--color-primary-element); text-decoration: none; }
+.joplin_nc_app-viewer-body a:hover { text-decoration: underline; }
+.joplin_nc_app-viewer-body hr { border: none; border-top: 1px solid var(--color-border); margin: 2em 0; }
+
+/* =====================================================================
+   Editor — header bar + Toast UI rich text editor
+   When edit mode is active, .joplin_nc_app-pane-viewer.joplin_nc_app-editing-mode drops
+   its own padding/overflow so the editor can fill the entire pane.
+   ===================================================================== */
+
+.joplin_nc_app-pane-viewer.joplin_nc_app-editing-mode {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.joplin_nc_app-editor-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--color-main-background);
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+    flex: 0 0 auto;
+}
+.joplin_nc_app-editor-mode {
+    color: var(--color-text-maxcontrast);
+    font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.joplin_nc_app-editor-mode-icon {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: var(--color-primary-element-light, rgba(0, 130, 201, 0.15));
+    color: var(--color-primary-element);
+    font-size: 13px;
+    font-weight: 700;
+}
+.joplin_nc_app-editor-mode strong {
+    color: var(--color-main-text);
+    font-weight: 600;
+    margin-left: 2px;
+}
+.joplin_nc_app-editor-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.joplin_nc_app-editor-actions button {
+    padding: 7px 18px;
+    font-size: 13px; font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+.joplin_nc_app-editor-actions button:hover {
+    background: var(--color-background-hover);
+    border-color: var(--color-primary-element);
+}
+.joplin_nc_app-editor-actions button:active { transform: scale(0.97); }
+.joplin_nc_app-editor-actions button[disabled] { opacity: 0.5; cursor: not-allowed; }
+.joplin_nc_app-editor-actions button.primary {
+    background: var(--color-primary-element);
+    color: var(--color-primary-element-text);
+    border-color: var(--color-primary-element);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.joplin_nc_app-editor-actions button.primary:hover {
+    filter: brightness(1.08);
+    border-color: var(--color-primary-element);
+}
+
+/* Plain-textarea fallback (only used when Toast UI fails to load). */
+.joplin_nc_app-editor-body {
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    min-height: 60vh;
+    padding: 16px 18px;
+    font-family: var(--font-face-monospace, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 14px; line-height: 1.6;
+    border: none;
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    resize: none; outline: none;
+}
+
+.joplin_nc_app-editor-status {
+    padding: 6px 20px;
+    font-size: 13px;
+    color: var(--color-text-maxcontrast);
+    min-height: 28px;
+    background: var(--color-main-background);
+    border-top: 1px solid var(--joplin_nc_app-divider);
+    flex: 0 0 auto;
+}
+.joplin_nc_app-editor-status.error   { color: var(--color-error); font-weight: 500; }
+.joplin_nc_app-editor-status.success { color: var(--color-success, #2eb045); font-weight: 500; }
+
+/* ---------- Toast UI Editor — full-pane WYSIWYG, themed to Nextcloud.
+   Markdown stays the source of truth on disk; this is purely visual. */
+.joplin_nc_app-rte-host {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-main-background);
+    overflow: hidden;
+}
+.joplin_nc_app-rte-host .toastui-editor-defaultUI,
+.joplin_nc_app-rte-host .toastui-editor-defaultUI .toastui-editor-main,
+.joplin_nc_app-rte-host .toastui-editor-defaultUI .toastui-editor-md-container,
+.joplin_nc_app-rte-host .toastui-editor-defaultUI .toastui-editor-ww-container,
+.joplin_nc_app-rte-host .toastui-editor-defaultUI .ProseMirror,
+.joplin_nc_app-rte-host .toastui-editor-defaultUI .toastui-editor-contents {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+.joplin_nc_app-rte-host .toastui-editor-defaultUI {
+    border-radius: 0;
+    background: var(--color-main-background);
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+}
+
+/* Toolbar */
+.joplin_nc_app-rte-host .toastui-editor-defaultUI-toolbar {
+    background: var(--color-background-dark, #f5f6f8);
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+    padding: 6px 12px;
+    flex: 0 0 auto;
+}
+/* Toolbar buttons — keep Toast UI's original sprite icon visible on hover.
+   We DON'T touch background-color / filter on hover, otherwise the
+   light-grey sprite turns invisible against a light hover background. */
+.joplin_nc_app-rte-host .toastui-editor-toolbar-icons {
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background-color: transparent;
+    margin: 1px 2px;
+    transition: background-color 0.12s, border-color 0.12s;
+}
+.joplin_nc_app-rte-host .toastui-editor-toolbar-icons:not(:disabled):hover {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-color: var(--color-border, rgba(0,0,0,0.1));
+}
+.joplin_nc_app-rte-host .toastui-editor-toolbar-icons.active {
+    background-color: rgba(0, 130, 201, 0.15);
+    border-color: var(--color-primary-element, #0082c9);
+}
+
+/* Tooltip text shown on hover (B → "Bold", I → "Italic", …).
+   Force readable black-on-white so it's visible regardless of theme. */
+.joplin_nc_app-rte-host .toastui-editor-tooltip,
+.toastui-editor-tooltip {
+    background: #2b2b2b !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+.joplin_nc_app-rte-host .toastui-editor-tooltip .text,
+.toastui-editor-tooltip .text,
+.joplin_nc_app-rte-host .toastui-editor-tooltip .arrow,
+.toastui-editor-tooltip .arrow {
+    color: #ffffff !important;
+    background: transparent !important;
+}
+.joplin_nc_app-rte-host .toastui-editor-toolbar-divider {
+    background-color: var(--joplin_nc_app-divider);
+    margin: 4px 6px;
+}
+.joplin_nc_app-rte-host .toastui-editor-popup {
+    background: var(--color-main-background);
+    border: 1px solid var(--color-border);
+    color: var(--color-main-text);
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+.joplin_nc_app-rte-host .toastui-editor-popup-add-link label,
+.joplin_nc_app-rte-host .toastui-editor-popup-add-image label {
+    color: var(--color-main-text);
+}
+.joplin_nc_app-rte-host .toastui-editor-popup input[type="text"],
+.joplin_nc_app-rte-host .toastui-editor-popup input[type="url"] {
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+}
+.joplin_nc_app-rte-host .toastui-editor-close-button {
+    color: var(--color-main-text);
+}
+
+/* Main editing surface */
+.joplin_nc_app-rte-host .toastui-editor-main {
+    background: var(--color-main-background);
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+}
+.joplin_nc_app-rte-host .toastui-editor-md-container,
+.joplin_nc_app-rte-host .toastui-editor-ww-container {
+    background: var(--color-main-background);
+    flex: 1 1 auto;
+    min-height: 0;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents,
+.joplin_nc_app-rte-host .toastui-editor {
+    color: var(--color-main-text) !important;
+    font-size: 15.5px;
+    line-height: 1.7;
+    font-family: var(--font-face, system-ui, -apple-system, "Segoe UI", "Roboto",
+                 "Helvetica Neue", sans-serif);
+    padding: 24px 32px;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents h1,
+.joplin_nc_app-rte-host .toastui-editor-contents h2 {
+    border-bottom: 1px solid var(--joplin_nc_app-divider);
+    padding-bottom: 0.2em;
+    color: var(--color-main-text);
+}
+.joplin_nc_app-rte-host .toastui-editor-contents h1,
+.joplin_nc_app-rte-host .toastui-editor-contents h2,
+.joplin_nc_app-rte-host .toastui-editor-contents h3,
+.joplin_nc_app-rte-host .toastui-editor-contents h4,
+.joplin_nc_app-rte-host .toastui-editor-contents h5,
+.joplin_nc_app-rte-host .toastui-editor-contents h6,
+.joplin_nc_app-rte-host .toastui-editor-contents p,
+.joplin_nc_app-rte-host .toastui-editor-contents li,
+.joplin_nc_app-rte-host .toastui-editor-contents td,
+.joplin_nc_app-rte-host .toastui-editor-contents th {
+    color: var(--color-main-text);
+}
+.joplin_nc_app-rte-host .toastui-editor-contents code {
+    background: var(--color-background-dark, #f4f5f7);
+    color: var(--color-main-text);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-face-monospace, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+.joplin_nc_app-rte-host .toastui-editor-contents pre {
+    background: var(--color-background-dark, #f4f5f7);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents pre code {
+    background: transparent;
+    padding: 0;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents blockquote {
+    border-left: 3px solid var(--color-primary-element-light, var(--color-border));
+    background: var(--color-background-dark, #f7f8fa);
+    color: var(--color-text-maxcontrast);
+    padding: 6px 14px;
+    border-radius: 0 6px 6px 0;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents a {
+    color: var(--color-primary-element);
+    text-decoration: none;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents a:hover { text-decoration: underline; }
+.joplin_nc_app-rte-host .toastui-editor-contents table {
+    border-collapse: collapse;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents table td,
+.joplin_nc_app-rte-host .toastui-editor-contents table th {
+    border: 1px solid var(--color-border);
+    padding: 6px 10px;
+}
+.joplin_nc_app-rte-host .toastui-editor-contents table th {
+    background: var(--color-background-dark);
+}
+.joplin_nc_app-rte-host .toastui-editor-contents .placeholder {
+    color: var(--color-text-maxcontrast);
+}
+
+/* Markdown mode (CodeMirror-style) — readable colors */
+.joplin_nc_app-rte-host .ProseMirror,
+.joplin_nc_app-rte-host .toastui-editor-md-preview,
+.joplin_nc_app-rte-host .toastui-editor-md-tab-container {
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    width: 100%;
+    max-width: none;
+}
+.joplin_nc_app-rte-host .toastui-editor-md-container .toastui-editor {
+    padding: 24px 32px;
+    width: 100%;
+    max-width: none;
+}
+
+/* Force full width on every wrapper Toast UI nests around the content. */
+.joplin_nc_app-rte-host .toastui-editor-main-container,
+.joplin_nc_app-rte-host .toastui-editor-main,
+.joplin_nc_app-rte-host .toastui-editor-md-container,
+.joplin_nc_app-rte-host .toastui-editor-ww-container,
+.joplin_nc_app-rte-host .toastui-editor-ww-container > .toastui-editor,
+.joplin_nc_app-rte-host .ProseMirror {
+    width: 100% !important;
+    max-width: none !important;
+}
+.joplin_nc_app-rte-host .toastui-editor-md-tab-container .tab-item {
+    color: var(--color-text-maxcontrast);
+}
+.joplin_nc_app-rte-host .toastui-editor-md-tab-container .tab-item.active {
+    color: var(--color-primary-element);
+    border-bottom-color: var(--color-primary-element);
+}
+
+/* WYSIWYG/Markdown mode-switch tabs — hidden (WYSIWYG-only UX). */
+.joplin_nc_app-rte-host .toastui-editor-mode-switch,
+.joplin_nc_app-rte-host .toastui-editor-md-tab-container {
+    display: none !important;
+}
+
+/* Dark-theme tweaks (Nextcloud sets data-themes / body class for dark) */
+body[data-theme-dark] .joplin_nc_app-rte-host .toastui-editor-defaultUI,
+body[data-theme-dark-highcontrast] .joplin_nc_app-rte-host .toastui-editor-defaultUI,
+body.theme--dark .joplin_nc_app-rte-host .toastui-editor-defaultUI {
+    background: var(--color-main-background);
+}
+body[data-theme-dark] .joplin_nc_app-rte-host .toastui-editor-toolbar-icons,
+body.theme--dark .joplin_nc_app-rte-host .toastui-editor-toolbar-icons {
+    filter: invert(0.92) hue-rotate(180deg);
+}
+body[data-theme-dark] .joplin_nc_app-rte-host .toastui-editor-toolbar-icons:not(:disabled):hover,
+body.theme--dark .joplin_nc_app-rte-host .toastui-editor-toolbar-icons:not(:disabled):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tablet: shrink horizontal padding so toolbar buttons aren't clipped */
+@media (max-width: 1100px) {
+    .joplin_nc_app-rte-host .toastui-editor-contents,
+    .joplin_nc_app-rte-host .toastui-editor-md-container .toastui-editor {
+        padding: 18px 20px;
+    }
+    .joplin_nc_app-editor-header { padding: 12px 16px; }
+}
+
+
+/* ---------- "Open in Nextcloud Text" link in the viewer header --------- */
+.joplin_nc_app-text-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.joplin_nc_app-text-btn:hover {
+    background: var(--color-background-hover);
+    border-color: var(--color-primary-element);
+    text-decoration: none;
+}
+
+/* ---------- Empty / loading ---------- */
+.joplin_nc_app-empty {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex: 1 1 auto;
+    color: var(--color-text-maxcontrast);
+    padding: 48px 24px;
+    text-align: center;
+}
+.joplin_nc_app-empty-title {
+    font-size: 20px; font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-main-text);
+    letter-spacing: -0.01em;
+}
+.joplin_nc_app-empty-subtitle {
+    font-size: 13.5px; line-height: 1.5;
+    margin-bottom: 22px; max-width: 420px;
+}
+.joplin_nc_app-empty .joplin_nc_app-empty-cta {
+    padding: 9px 20px;
+    font-size: 14px; font-weight: 600;
+    border-radius: 999px; border: none;
+    background: var(--color-primary-element);
+    color: var(--color-primary-element-text);
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    transition: filter 0.15s;
+}
+.joplin_nc_app-empty .joplin_nc_app-empty-cta:hover { filter: brightness(1.05); }
+
+.joplin_nc_app-loading {
+    display: flex; align-items: center; justify-content: center;
+    flex: 1 1 auto;
+    padding: 48px;
+    color: var(--color-text-maxcontrast);
+    font-size: 14px;
+}
+.joplin_nc_app-loading::before {
+    content: "";
+    display: inline-block;
+    width: 18px; height: 18px;
+    margin-right: 10px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary-element);
+    border-radius: 50%;
+    animation: joplin_nc_app-spin 0.8s linear infinite;
+}
+@keyframes joplin_nc_app-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Global loading overlay (centered card) ---------- */
+.joplin_nc_app-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 24, 32, 0.18);
+    z-index: 100;
+    pointer-events: none;
+}
+.joplin_nc_app-overlay.visible {
+    display: flex;
+    pointer-events: auto;
+}
+.joplin_nc_app-overlay-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 22px;
+    background: var(--color-main-background);
+    border-radius: 12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+}
+.joplin_nc_app-overlay-spinner {
+    width: 22px; height: 22px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary-element);
+    border-radius: 50%;
+    animation: joplin_nc_app-spin 0.8s linear infinite;
+    flex: 0 0 auto;
+}
+.joplin_nc_app-overlay-text {
+    font-size: 13px; font-weight: 600;
+    color: var(--color-main-text);
+    white-space: nowrap;
+}
+
+/* ---------- Toasts ---------- */
+.joplin_nc_app-toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.18s, transform 0.18s;
+    max-width: 90vw;
+}
+.joplin_nc_app-toast.visible { opacity: 0.97; transform: translateX(-50%) translateY(0); }
+.joplin_nc_app-toast-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    font-size: 12px; font-weight: 700;
+    flex: 0 0 auto;
+}
+.joplin_nc_app-toast-success { background: #2eb045; }
+.joplin_nc_app-toast-error   { background: #c1392b; }
+.joplin_nc_app-toast-info    { background: #2c3e50; }
+
+/* ---------- Confirmation modal ---------- */
+.joplin_nc_app-modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(20, 24, 32, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 11000;
+    padding: 16px;
+    animation: joplin_nc_app-fade-in 0.12s ease-out;
+}
+@keyframes joplin_nc_app-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.joplin_nc_app-modal {
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    width: 100%; max-width: 440px;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    overflow: hidden;
+    animation: joplin_nc_app-modal-in 0.16s ease-out;
+}
+@keyframes joplin_nc_app-modal-in {
+    from { transform: translateY(8px) scale(0.98); opacity: 0; }
+    to   { transform: translateY(0) scale(1);     opacity: 1; }
+}
+.joplin_nc_app-modal-header { padding: 18px 22px 4px; }
+.joplin_nc_app-modal-title {
+    margin: 0; font-size: 17px; font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.joplin_nc_app-modal-body {
+    padding: 8px 22px 18px;
+    font-size: 14px; line-height: 1.5;
+    color: var(--color-text-maxcontrast);
+}
+.joplin_nc_app-modal-actions {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 12px 18px 18px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-background-dark, #f7f8fa);
+}
+.joplin_nc_app-modal-btn {
+    padding: 8px 18px;
+    font-size: 13px; font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    color: var(--color-main-text) !important;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, filter 0.15s;
+}
+.joplin_nc_app-modal-btn:hover,
+.joplin_nc_app-modal-btn:focus-visible {
+    background: var(--color-background-hover);
+    color: var(--color-main-text) !important;
+    border-color: var(--color-primary-element, #0082c9);
+}
+.joplin_nc_app-modal-btn.primary {
+    background: var(--color-primary-element, #0082c9);
+    color: var(--color-primary-element-text, #ffffff) !important;
+    border-color: var(--color-primary-element, #0082c9);
+}
+.joplin_nc_app-modal-btn.primary:hover,
+.joplin_nc_app-modal-btn.primary:focus-visible {
+    background: var(--color-primary-element-hover, #006aa3);
+    color: var(--color-primary-element-text, #ffffff) !important;
+    border-color: var(--color-primary-element-hover, #006aa3);
+    filter: none;
+}
+.joplin_nc_app-modal-btn.danger {
+    background: #b3261e;
+    color: #ffffff !important;
+    border-color: #8c1d18;
+}
+.joplin_nc_app-modal-btn.danger:hover,
+.joplin_nc_app-modal-btn.danger:focus-visible {
+    background: #8c1d18;
+    color: #ffffff !important;
+    border-color: #6b160f;
+}
+.joplin_nc_app-modal-btn.danger:active {
+    background: #6b160f;
+    color: #ffffff !important;
+}
+
+/* Modal text input (used by showPrompt for create / rename notebook). */
+.joplin_nc_app-modal-input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.joplin_nc_app-modal-input:focus {
+    outline: none;
+    border-color: var(--color-primary-element);
+    box-shadow: 0 0 0 3px var(--color-primary-element-light, rgba(0, 130, 201, 0.15));
+}
+.joplin_nc_app-modal-message {
+    margin: 0 0 4px;
+    color: var(--color-main-text);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+/* ---------- Sync status pill (sidebar header) ---------- */
+.joplin_nc_app-sync-pill {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    line-height: 1.4;
+    vertical-align: middle;
+    transition: opacity 0.15s;
+}
+.joplin_nc_app-sync-pill.syncing {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--color-text-maxcontrast);
+}
+.joplin_nc_app-sync-pill.syncing::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    margin-right: 5px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    vertical-align: -1px;
+    animation: joplin_nc_app-spin 0.8s linear infinite;
+}
+.joplin_nc_app-sync-pill.ok {
+    background: rgba(46, 160, 67, 0.15);
+    color: #1a7f37;
+}
+.joplin_nc_app-sync-pill.error {
+    background: rgba(193, 57, 43, 0.15);
+    color: #b42318;
+}
+@keyframes joplin_nc_app-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---------- Inline action buttons inside notebook tree items ---------- */
+.joplin_nc_app-tree-item { position: relative; }
+.joplin_nc_app-tree-actions {
+    margin-left: auto;
+    display: inline-flex;
+    gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+.joplin_nc_app-tree-item:hover .joplin_nc_app-tree-actions,
+.joplin_nc_app-tree-item:focus-within .joplin_nc_app-tree-actions,
+.joplin_nc_app-tree-item.active .joplin_nc_app-tree-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+.joplin_nc_app-tree-action {
+    padding: 2px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    background: var(--color-main-background);
+    /* !important: Nextcloud's global button rules sometimes set color: white
+       on hover, which would make the label disappear over the pale pink
+       danger background. Lock our colors in. */
+    color: var(--color-main-text) !important;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+                transform 0.15s ease, box-shadow 0.15s ease;
+}
+.joplin_nc_app-tree-action:hover,
+.joplin_nc_app-tree-action:focus-visible {
+    background: var(--color-background-hover);
+    color: var(--color-main-text) !important;
+    border-color: var(--color-primary-element, #0082c9);
+}
+
+/* ---------- Icon-only buttons (Rename / Delete / Edit) ---------- */
+/* Used on .joplin_nc_app-tree-action.joplin_nc_app-icon-only (notebook rename/delete)
+   and .joplin_nc_app-edit-btn / .joplin_nc_app-delete-btn .joplin_nc_app-icon-only (viewer). */
+.joplin_nc_app-icon-only {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0 !important;
+    border-radius: 8px;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0;
+}
+.joplin_nc_app-icon-only svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    pointer-events: none;
+}
+/* Smaller variant when used inside the notebook tree row */
+.joplin_nc_app-tree-action.joplin_nc_app-icon-only {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+}
+.joplin_nc_app-tree-action.joplin_nc_app-icon-only svg {
+    width: 14px;
+    height: 14px;
+}
+.joplin_nc_app-icon-only:hover,
+.joplin_nc_app-icon-only:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+}
+.joplin_nc_app-icon-only:active {
+    transform: translateY(0);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Danger variant (Delete). Idle: dark red text on white. Hover: solid red + white. */
+.joplin_nc_app-tree-action.danger {
+    color: #b3261e !important;
+    border-color: rgba(179, 38, 30, 0.35);
+}
+.joplin_nc_app-tree-action.danger:hover,
+.joplin_nc_app-tree-action.danger:focus-visible {
+    background: #b3261e;
+    color: #ffffff !important;
+    border-color: #8c1d18;
+}
+.joplin_nc_app-tree-action.danger:active {
+    background: #8c1d18;
+    color: #ffffff !important;
+}
+
+/* ---------- Sidebar slide-in backdrop (mobile) ---------- */
+.joplin_nc_app-backdrop {
+    display: none;
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 4;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+    .joplin_nc_app-pane-notebooks { flex-basis: 220px; width: 220px; min-width: 200px; }
+    .joplin_nc_app-pane-list      { flex-basis: 290px; width: 290px; min-width: 260px; }
+    .joplin_nc_app-pane-viewer    { padding: 24px 28px; }
+}
+
+@media (max-width: 1024px) {
+    .joplin_nc_app-pane-notebooks { flex-basis: 200px; width: 200px; min-width: 180px; }
+    .joplin_nc_app-pane-list      { flex-basis: 270px; width: 270px; min-width: 240px; }
+}
+
+@media (max-width: 768px) {
+    /* Notebooks + notes list both slide in together as a sidebar overlay */
+    .joplin_nc_app-pane-notebooks,
+    .joplin_nc_app-pane-list {
+        position: absolute;
+        top: 0; bottom: 0;
+        z-index: 5;
+        transform: translateX(-100%);
+        transition: transform 0.22s ease;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.12);
+    }
+    .joplin_nc_app-pane-notebooks {
+        left: 0;
+        width: 200px;
+        max-width: 60%;
+    }
+    .joplin_nc_app-pane-list {
+        left: 200px;
+        width: calc(86% - 200px);
+        max-width: calc(340px - 200px);
+    }
+    #joplin_nc_app-app.joplin_nc_app-sidebar-open .joplin_nc_app-pane-notebooks,
+    #joplin_nc_app-app.joplin_nc_app-sidebar-open .joplin_nc_app-pane-list { transform: translateX(0); }
+    #joplin_nc_app-app.joplin_nc_app-sidebar-open .joplin_nc_app-backdrop  { display: block; }
+    .joplin_nc_app-pane-viewer {
+        flex: 1 1 auto;
+        padding: 16px 18px 24px;
+    }
+    .joplin_nc_app-menu-btn { display: inline-flex; }
+    .joplin_nc_app-viewer-title  { font-size: 22px; }
+    .joplin_nc_app-viewer-header { flex-wrap: wrap; }
+    .joplin_nc_app-viewer-actions { width: 100%; justify-content: flex-end; }
+}
