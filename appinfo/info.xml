@@ -22,12 +22,12 @@ Features:
 This app is independent of the "Joplin File Titles" app; both can be enabled together.
     ]]></description>
     <version>1.5.1</version>
-    <licence>agpl</licence>
-    <author>Schuyler 'Rocky' Reidel</author>
+    <licence>GPL-3.0-or-later</licence>
+    <author mail="schuyler@reidellawfirm.com">Schuyler "Rocky" Reidel, Reidel Law Firm</author>
     <namespace>Joplin</namespace>
     <category>office</category>
     <category>organization</category>
-    <website>https://joplinapp.org/</website>
+    <website>https://github.com/Reidel-Law-Firm/joplin-nc-app</website>
     <bugs>https://github.com/Reidel-Law-Firm/joplin-nc-app/issues</bugs>
     <repository type="git">https://github.com/Reidel-Law-Firm/joplin-nc-app</repository>
     <dependencies>
