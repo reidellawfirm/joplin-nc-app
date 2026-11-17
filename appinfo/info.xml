@@ -21,17 +21,17 @@ Features:
 
 This app is independent of the "Joplin File Titles" app; both can be enabled together.
     ]]></description>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <licence>GPL-3.0-or-later</licence>
     <author mail="schuyler@reidellawfirm.com">Schuyler "Rocky" Reidel, Reidel Law Firm</author>
     <namespace>Joplin</namespace>
     <category>office</category>
     <category>organization</category>
-    <website>https://github.com/Reidel-Law-Firm/joplin-nc-app</website>
-    <bugs>https://github.com/Reidel-Law-Firm/joplin-nc-app/issues</bugs>
-    <repository type="git">https://github.com/Reidel-Law-Firm/joplin-nc-app</repository>
+    <website>https://github.com/reidellawfirm/joplin-nc-app</website>
+    <bugs>https://github.com/reidellawfirm/joplin-nc-app/issues</bugs>
+    <repository type="git">https://github.com/reidellawfirm/joplin-nc-app</repository>
     <dependencies>
-        <nextcloud min-version="28" max-version="99"/>
+        <nextcloud min-version="34" max-version="35"/>
     </dependencies>
     <navigations>
         <navigation>
