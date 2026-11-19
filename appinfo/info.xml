@@ -21,7 +21,7 @@ Features:
 
 This app is independent of the "Joplin File Titles" app; both can be enabled together.
     ]]></description>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
     <licence>GPL-3.0-or-later</licence>
     <author mail="schuyler@reidellawfirm.com">Schuyler "Rocky" Reidel, Reidel Law Firm</author>
     <namespace>Joplin</namespace>
@@ -30,6 +30,7 @@ This app is independent of the "Joplin File Titles" app; both can be enabled tog
     <website>https://github.com/reidellawfirm/joplin-nc-app</website>
     <bugs>https://github.com/reidellawfirm/joplin-nc-app/issues</bugs>
     <repository type="git">https://github.com/reidellawfirm/joplin-nc-app</repository>
+    <screenshot small-thumbnail="https://raw.githubusercontent.com/reidellawfirm/joplin-nc-app/v1.5.3/screenshots/01-notes-browser-small.png">https://raw.githubusercontent.com/reidellawfirm/joplin-nc-app/v1.5.3/screenshots/01-notes-browser.png</screenshot>
     <dependencies>
         <nextcloud min-version="34" max-version="35"/>
     </dependencies>
